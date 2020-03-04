@@ -12,7 +12,7 @@ import axios from 'axios'
 //将axios挂载到vue的原型对象上,这样每一个vue组件都能直接通过this.$http，发起ajax请求。
 Vue.prototype.$http = axios
 //配置发起请求的根路径
-axios.defaults.baseURL = 'http://localhost:9001/'
+axios.defaults.baseURL = 'http://localhost:8888/api/'
 //Vue.config.productionTip = false;
 
 new Vue({
