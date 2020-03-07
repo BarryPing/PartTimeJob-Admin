@@ -1,6 +1,6 @@
 {
-  "name": "ptjob-admin",
-  "version": "0.1.0",
+  "name": "parttimejob",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",

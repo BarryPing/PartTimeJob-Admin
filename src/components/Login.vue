@@ -44,7 +44,7 @@ export default {
         //验证用户名是否合法
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+          { min: 2, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ], //验证密码是否合法
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -67,7 +67,8 @@ export default {
           'user/login',
           this.loginForm
         ) //校验成功则发起登录请求
-        if (res.state !== 20000) return this.$message.error('登录失败!')
+        console.log(res)
+        if (res.code !== 20000) return this.$message.error('登录失败!')
         this.$message.success('登录成功!')
         //console.log(res);
         //将登录成功之后的 token，保存到客户端的 sessionStorage 中

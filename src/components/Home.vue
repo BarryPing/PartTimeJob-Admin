@@ -15,21 +15,21 @@
         <!-- 侧边栏菜单区域 -->
         <el-menu background-color="#333744" text-color="#fff" active-text-color="#ffd04b">
           <!-- 一级菜单 -->
-          <el-submenu index="1">
+          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单的模板 -->
             <template slot="title">
               <!-- 图标 -->
               <i class="el-icon-location"></i>
               <!-- 文本 -->
-              <span>一级菜单</span>
+              <span>{{item.name}}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item index="1-2">
+            <el-menu-item :index="subItem.id+''" v-for="subItem in item.children" :key="subItem.id">
               <template slot="title">
                 <!-- 图标 -->
                 <i class="el-icon-location"></i>
                 <!-- 文本 -->
-                <span>二级菜单</span>
+                <span>{{subItem.name}}</span>
               </template>
             </el-menu-item>
           </el-submenu>
@@ -43,6 +43,13 @@
 
 <script>
 export default {
+  data(){
+      return{
+        //左侧菜单数据
+        menuList:[]
+      }
+  },
+  //当一加载该页面时，就立即获取左侧菜单 
   created() {
     this.getMenuList()
   },
@@ -64,6 +71,8 @@ export default {
     //获取左侧菜单
     async getMenuList() {
       const { data: res } = await this.$http.get('menu')
+      if(res.code!==20000) return this.$message.error(res.message)
+      this.menuList=res.data
       console.log(res)
     }
   }
