@@ -63,18 +63,31 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return //校验失败，则返回
-        const { data: res } = await this.$http.post(
-          'user/login',
-          this.loginForm
-        ) //校验成功则发起登录请求
-        console.log(res)
-        if (res.code !== 20000) return this.$message.error('登录失败!')
-        this.$message.success('登录成功!')
+        await this.$http.post('user/login',this.loginForm)
+        .then(res => {
+          console.log(res)
+          if (res.data.code !== 20000) return this.$message.error('登录失败!')
+          this.$message.success('登录成功!')
+          window.sessionStorage.setItem('token', res.data.data.token)
+          this.$router.push('/home')
+        })
+        .catch(err => {
+          //console.log(err)
+          this.$message.error(err+"")
+          
+        })
+        // const { data: res } = await this.$http.post(
+        //   'user/login',
+        //   this.loginForm
+        // ) //校验成功则发起登录请求
+        // console.log(res)
+        // if (res.code !== 20000) return this.$message.error('登录失败!')
+        // this.$message.success('登录成功!')
         //console.log(res);
         //将登录成功之后的 token，保存到客户端的 sessionStorage 中
-        window.sessionStorage.setItem('token', res.data.token)
+        // window.sessionStorage.setItem('token', res.data.token)
         //导航跳转到后台主页，路由地址是 /home
-        this.$router.push('/home')
+        //this.$router.push('/home')
       })
     }
   }
