@@ -67,7 +67,7 @@ export default {
       // 一级菜单图标设置
       iconsObj: {
         '1': 'el-icon-s-home', // 中心概况
-        '5': 'el-icon-user-solid', // 用户管理
+        '6': 'el-icon-user-solid', // 会员管理
         '12': 'el-icon-s-check', // 权限管理"，
         '20': 'el-icon-s-flag', // 招聘管理
         '37': 'el-icon-s-order', // 应聘管理
@@ -130,8 +130,8 @@ export default {
     display: flex;
     align-items: center;
     img {
-      height: 50px;
-      width: 80px;
+      height: 55px;
+      width: 70px;
     }
     span {
       margin-left: 15px;
