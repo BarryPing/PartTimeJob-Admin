@@ -163,7 +163,7 @@ export default {
       if (res.code !== 20000) return this.$message.error(res.message)
       this.$message.success('密码已重置为: 123456')
     },
-    // 根据用户ID重置用户密码
+    // 根据用户ID删除用户
     async removeUserById(id) {
       // console.log('id=' + id)
       // 弹框询问是否删除用户
