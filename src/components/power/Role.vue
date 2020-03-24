@@ -15,7 +15,7 @@
         </el-col>
       </el-row>
       <!-- 角色列表区域 -->
-      <el-table :data="rolelist" border stripe>
+      <el-table v-loading="loading" :data="rolelist" border stripe>
         <!-- 展开列 -->
         <el-table-column type="expand">
           <template v-slot:="scope">
@@ -215,7 +215,8 @@ export default {
       // 控制编辑角色的对话框的显示与隐藏
       editDialogVisible: false,
       // 查询到的角色信息对象
-      editForm: {}
+      editForm: {},
+      loading: true
     }
   },
   created() {
@@ -231,6 +232,7 @@ export default {
           if (res.data.code !== 20000) return this.$message.error('获取角色列表失败')
           // this.$message.success('获取角色列表成功')
           this.rolelist = res.data.data
+          this.loading = false
           console.log(res)
         })
         .catch(err => {

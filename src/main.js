@@ -14,6 +14,8 @@ Vue.config.productionTip = false
 // 导入axios依赖
 import axios from 'axios'
 
+import TreeTable from 'vue-table-with-tree-grid'
+
 // 配置发起请求的根路径
 axios.defaults.baseURL = 'http://localhost:8888/api/'
 // 将axios挂载到vue的原型对象上,这样每一个vue组件都能直接通过this.$http，发起ajax请求。
@@ -26,7 +28,7 @@ axios.interceptors.request.use(config => {
 // Vue.config.productionTip = false;
 
 Vue.use(ElementUI)
-
+Vue.component('tree-table', TreeTable)
 new Vue({
   router,
   render: h => h(App)

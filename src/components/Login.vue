@@ -67,7 +67,7 @@ export default {
           .then(res => {
             console.log(res)
             if (res.data.code !== 20000) return this.$message.error('登录失败!')
-            this.$message.success('登录成功!')
+            this.$message.success('欢迎回来!')
             window.sessionStorage.setItem('token', res.data.data.token)
             this.$router.push('/home')
           })

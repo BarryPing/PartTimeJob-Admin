@@ -27,7 +27,7 @@
         </el-col>
       </el-row>
       <!-- 用户列表区域 -->
-      <el-table id="exportTab" :data="userlist" border stripe>
+      <el-table id="exportTab" v-loading="loading" :data="userlist" border stripe>
         <el-table-column type="index" label="#" />
         <el-table-column label="时间" prop="createTime" />
         <el-table-column label="学号" prop="stuid" />
@@ -85,7 +85,8 @@ export default {
         pagesize: 2// 每页显示条数
       },
       userlist: [],
-      total: 0
+      total: 0,
+      loading: true
 
     }
   },
@@ -103,6 +104,7 @@ export default {
           // this.$message.success('获取学生列表成功')
           this.userlist = res.data.data.users
           this.total = res.data.data.totalpage
+          this.loading = false
         })
         .catch(err => {
           this.$message.error('获取学生列表失败:' + err)
