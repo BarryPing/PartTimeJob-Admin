@@ -62,6 +62,7 @@
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
+        background
         :current-page="queryInfo.pagenum"
         :page-sizes="[1, 2, 5, 10]"
         :page-size="queryInfo.pagesize"

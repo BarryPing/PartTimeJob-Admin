@@ -10,12 +10,18 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/css/global.css'
 // 导入阿里字体图标
 import './assets/fonts/iconfont.css'
+
 Vue.config.productionTip = false
 // 导入axios依赖
 import axios from 'axios'
 
 import TreeTable from 'vue-table-with-tree-grid'
-
+// 导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+// 导入富文本编辑器的样式
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
 // 配置发起请求的根路径
 axios.defaults.baseURL = 'http://localhost:8888/api/'
 // 将axios挂载到vue的原型对象上,这样每一个vue组件都能直接通过this.$http，发起ajax请求。
@@ -25,10 +31,11 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = 'Bearer ' + window.sessionStorage.getItem('token')
   return config
 })
-// Vue.config.productionTip = false;
-
 Vue.use(ElementUI)
+
 Vue.component('tree-table', TreeTable)
+// 将富文本编辑器注册为全局可用的组件
+Vue.use(VueQuillEditor)
 new Vue({
   router,
   render: h => h(App)

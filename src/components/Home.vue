@@ -73,7 +73,8 @@ export default {
         '37': 'el-icon-s-order', // 应聘管理
         '56': 'el-icon-s-comment', // 留言管理
         '61': 'el-icon-s-platform', // 留言管理
-        '67': 'el-icon-s-data' // 数据统计
+        '67': 'el-icon-s-data', // 数据统计
+        '77': 'el-icon-document'// 文件管理
       },
       // 是否折叠左侧菜单
       isCollapse: false

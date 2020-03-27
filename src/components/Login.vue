@@ -19,7 +19,7 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" prefix-icon="iconfont iconmima" />
+          <el-input v-model="loginForm.password" type="password" prefix-icon="iconfont iconmima" show-password />
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">

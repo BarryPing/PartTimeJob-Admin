@@ -23,7 +23,7 @@
         </el-col>
         <el-col :span="4">
           <el-button v-if="false" type="primary" @click="addDialogVisible=true">添加用户</el-button>
-          <el-button type="primary" @click="exportTable">导出</el-button>
+          <el-button type="primary" icon="el-icon-download" @click="exportTable">导出</el-button>
         </el-col>
       </el-row>
       <!-- 用户列表区域 -->
@@ -58,6 +58,7 @@
       </el-table>
       <!-- 分页区域 -->
       <el-pagination
+        background
         :current-page="queryInfo.pagenum"
         :page-sizes="[1, 2, 5, 10]"
         :page-size="queryInfo.pagesize"

@@ -8,6 +8,9 @@ import CenterContent from '../components/center/CenterContent.vue'
 import Role from '../components/power/Role.vue'
 import Admin from '../components/power/Admin.vue'
 import Cate from '../components/recruit/Cate.vue'
+import JobList from '../components/recruit/JobList.vue'
+import Add from '../components/recruit/Add.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -23,8 +26,9 @@ const routes = [
       { path: '/center/content', component: CenterContent },
       { path: '/permission/role', component: Role },
       { path: '/permission/user', component: Admin },
-      { path: '/recruit/class', component: Cate }
-
+      { path: '/recruit/class', component: Cate },
+      { path: '/recruit/content', component: JobList },
+      { path: '/recruit/content/add', component: Add }
     ]
   }
 ]

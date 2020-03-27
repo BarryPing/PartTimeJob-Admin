@@ -43,6 +43,7 @@
       </tree-table>
       <!--分页区域  -->
       <el-pagination
+        background
         :current-page="querInfo.pagenum"
         :page-sizes="[3, 5, 10, 15]"
         :page-size="querInfo.pagesize"
@@ -57,6 +58,7 @@
       title="添加分类"
       :visible.sync="addCateDialogVisible"
       width="50%"
+      @close="addCateDialogClosed"
     >
       <!-- 添加分类的表单 -->
       <el-form ref="addCateFormRulesRef" :model="addCateForm" :rules="addCateFormRules" label-width="100px">
@@ -66,17 +68,19 @@
         <el-form-item label="父级分类">
           <!-- options:用来指定数据源 -->
           <!-- props:用来指定配置对象 -->
+          <!-- clearable:用清空已选择的 -->
           <el-cascader
             v-model="selectedKeys"
             :options="parentCateList"
             :props="cascaderProps"
+            clearable
             @change="parentCateChange"
           />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addCateDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addCate">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 编辑分类的对话框 -->
@@ -154,7 +158,9 @@ export default {
         // 将要添加的分类的名称
         cat_name: '',
         // 父级分类的id
-        cat_pid: 0
+        cat_pid: 0,
+        // 分类的等级，默认是一级分类 1
+        cat_level: 0
       },
       // 编辑分类的表达数据对象
       editFormInfo: {
@@ -172,6 +178,8 @@ export default {
       // 指定级联选择器的配置对象
       cascaderProps: {
         expandTrigger: 'hover',
+        // 是否允许选中父级分类
+        checkStrictly: true,
         value: 'jtId',
         label: 'jtName',
         children: 'children'
@@ -192,9 +200,20 @@ export default {
       }
       // 把数据列表，赋值给 catelist
       this.catelist = res.data.categorys
+      this.removeChildren(this.catelist)
       // 为总数据条数赋值
       this.total = res.data.totalpage
-      console.log(res)
+      console.log(this.catelist)
+    },
+    // 递归删除岗位分类数据当中子节点为空的children对象
+    removeChildren(array) {
+      array.forEach(element => {
+        if (element.children.length === 0) {
+          delete element.children
+        } else {
+          this.removeChildren(element.children)
+        }
+      })
     },
     // 监听pagesize改变
     handleSizeChange(newSize) {
@@ -221,10 +240,24 @@ export default {
       }
       // 把数据列表，赋值给 catelist
       this.parentCateList = res.data.categorys
+      this.removeChildren(this.parentCateList)
       // console.log(this.parentCateList)
     },
-    // 级联选择器选项发生变化触发该函数
+    // 级联选择器选中项发生变化触发该函数
     parentCateChange() {
+      // 如果 selectedKeys 数组中的length 大于0，证明当前当中了父级分类
+      // 反之，就说明没有选中任何父级分类
+      if (this.selectedKeys.length > 0) {
+        // 父级分类的Id
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1] // 所要添加的分类的等级为选中的selectedKeys的长度+1
+        this.addCateForm.cat_level = this.selectedKeys.length
+        return
+      } else {
+        // 重置
+        // 父级分类的Id
+        this.addCateForm.cat_pid = 0
+        this.addCateForm.cat_level = 0
+      }
       console.log(this.selectedKeys)
     },
     // 监听编辑按钮的点击事件
@@ -233,7 +266,7 @@ export default {
       this.editFormInfo.cat_name = jtName
       this.editCateDialogVisible = true
     },
-    // 监听修改角色Dialog关闭事件
+    // 监听修改Dialog关闭事件
     editDialogClosed() {
       this.$refs.editFormRef.resetFields()
     },
@@ -279,6 +312,26 @@ export default {
       if (res.code !== 20000) return this.$message.error(res.message)
       this.$message.success(res.message)
       this.getCateList()
+    },
+    // 点击确定按钮添加新的分类
+    addCate() {
+      this.$refs.addCateFormRulesRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('recruit/class/add', this.addCateForm)
+        if (res.code !== 20000) {
+          return this.$message.error(res.message)
+        }
+        this.$message.success(res.message)
+        this.getCateList()
+        this.addCateDialogVisible = false
+      })
+    },
+    // 关闭添加分类对话事件,重置表单数据
+    addCateDialogClosed() {
+      this.$refs.addCateFormRulesRef.resetFields()
+      this.selectedKeys = []
+      this.addCateForm.cat_pid = 0
+      this.addCateForm.cat_level = 0
     }
   }
 }
