@@ -91,16 +91,18 @@
           <el-tab-pane name="4" label="岗位申请">
             <!-- 富文本编辑器组件 -->
             <!-- <quill-editor v-model="addForm.cen_form" /> -->
-            <!-- 文件上传 -->
             <el-upload
-              class="upload-demo"
               drag
-              action="https://jsonplaceholder.typicode.com/posts/"
-              multiple
+              show-file-list
+              action="http://localhost:8888/api/files/upload"
+              :headers="headerObj"
+              :on-success="handleSuccess"
+              accept=".doc"
+              :data="paramObj"
             >
               <i class="el-icon-upload" />
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div slot="tip" class="el-upload__tip">只能上传docx文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip">只能上传后缀为.doc 文件，且不超过2M</div>
             </el-upload>
             <!-- 添加岗位的按钮 -->
             <el-button type="primary" class="btnAdd" @click="addJob">添加岗位</el-button>
@@ -130,7 +132,7 @@ export default {
         // 任职要求
         cen_request: '',
         // 负责老师编号
-        cen_fzPerson: 0,
+        cen_fzPerson: '',
         // 岗位申请
         cen_form: ''
 
@@ -176,6 +178,14 @@ export default {
         expandTrigger: 'hover',
         value: 'id',
         label: 'username'
+      },
+      // 表格的备注
+      paramObj: {
+        remark: '岗位申请表(自定义)'
+      },
+      // 文件上传请求头
+      headerObj: {
+        Authorization: 'Bearer ' + window.sessionStorage.getItem('token')
       }
     }
   },
@@ -235,6 +245,40 @@ export default {
     // 添加岗位信息
     addJob() {
       console.log(this.addForm)
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请填写必要的表单项!')
+        }
+        // 发起添加岗位请求
+        const { data: res } = await this.$http.post('recruit/content/add', {
+          cen_jobname: this.addForm.cen_jobname,
+          cen_unit: this.addForm.cen_unit,
+          cen_number: this.addForm.cen_number,
+          cen_address: this.addForm.cen_address,
+          job_cat: this.addForm.job_cat[2],
+          cen_duty: this.addForm.cen_duty,
+          cen_request: this.addForm.cen_request,
+          cen_fzPerson: this.addForm.cen_fzPerson[0],
+          cen_form: this.addForm.cen_form
+        })
+        console.log(res)
+        if (res.code !== 20000) {
+          return this.$message.error(res.message)
+        }
+        this.$message.success(res.message)
+        this.$router.push('/recruit/content')
+      })
+    },
+    // 监听文件上传成功的事件
+    handleSuccess(response, file) {
+      console.log(response)
+      console.log(file)
+      if (response.code !== 20000) {
+        return this.$message.error(response.message)
+      }
+      this.$message.success(response.message)
+      // 将返回的文件Id放到表单中去
+      this.addForm.cen_form = response.data
     }
   }
 }

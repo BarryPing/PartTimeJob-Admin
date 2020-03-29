@@ -17,7 +17,7 @@
             @clear="getJobList"
             @keyup.enter.native="getJobList"
           >
-            <el-button slot="append" icon="el-icon-search" />
+            <el-button slot="append" icon="el-icon-search" @click="getJobList" />
           </el-input>
         </el-col>
         <el-col :span="2">
@@ -98,6 +98,10 @@
           prop="cen_number"
           label="招聘人数"
         />
+        <el-table-column
+          prop="cen_appronumber"
+          label="报名人数"
+        />
         <el-table-column label="是否招满">
           <template v-slot:="scope">
             <el-tag v-if="scope.row.cen_fullstate===false" type="success">未招满</el-tag>
@@ -113,8 +117,8 @@
 
         <el-table-column label="操作" width="145px">
           <template v-slot:="scope">
-            <el-button type="primary" size="mini">编辑</el-button>
-            <el-button type="danger" size="mini" @click="removeJobInfo(scope.row.cenId)">删除</el-button>
+            <el-button type="primary" size="mini" @click="goEditPage(scope.row.cen_id)">编辑</el-button>
+            <el-button type="danger" size="mini" @click="removeJobInfo(scope.row.cen_id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -211,7 +215,7 @@ export default {
     },
     // 删除岗位信息
     async removeJobInfo(jobid) {
-    // console.log('id=' + id)
+      console.log('id=' + jobid)
       // 弹框询问是否删除分类
       const confirmResult = await this.$confirm('此操作将永久删除该岗位, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -231,6 +235,9 @@ export default {
     },
     goAddPage() {
       this.$router.push('/recruit/content/add/')
+    },
+    goEditPage(id) {
+      this.$router.push('/recruit/class/upd/' + id)
     }
   }
 }

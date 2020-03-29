@@ -10,6 +10,8 @@ import Admin from '../components/power/Admin.vue'
 import Cate from '../components/recruit/Cate.vue'
 import JobList from '../components/recruit/JobList.vue'
 import Add from '../components/recruit/Add.vue'
+import Upload from '../components/files/Upload.vue'
+import Edit from '../components/recruit/Edit.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +30,9 @@ const routes = [
       { path: '/permission/user', component: Admin },
       { path: '/recruit/class', component: Cate },
       { path: '/recruit/content', component: JobList },
-      { path: '/recruit/content/add', component: Add }
+      { path: '/recruit/content/add', component: Add },
+      { path: '/files/upload', component: Upload },
+      { path: '/recruit/class/upd/:id', component: Edit }
     ]
   }
 ]
