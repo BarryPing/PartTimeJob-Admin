@@ -32,3 +32,6 @@ body,
 .ql-editor{
     min-height: 300px;
 }
+.el-form-item__label{
+    font-weight:bold
+}

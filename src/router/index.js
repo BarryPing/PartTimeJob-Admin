@@ -12,6 +12,7 @@ import JobList from '../components/recruit/JobList.vue'
 import Add from '../components/recruit/Add.vue'
 import Upload from '../components/files/Upload.vue'
 import Edit from '../components/recruit/Edit.vue'
+import Apply from '../components/apply/Apply.vue'
 
 Vue.use(VueRouter)
 
@@ -32,7 +33,8 @@ const routes = [
       { path: '/recruit/content', component: JobList },
       { path: '/recruit/content/add', component: Add },
       { path: '/files/upload', component: Upload },
-      { path: '/recruit/class/upd/:id', component: Edit }
+      { path: '/recruit/class/upd/:id', component: Edit },
+      { path: '/accept/content', component: Apply }
     ]
   }
 ]
