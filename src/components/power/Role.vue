@@ -232,6 +232,8 @@ export default {
           if (res.data.code !== 20000) return this.$message.error('获取角色列表失败')
           // this.$message.success('获取角色列表成功')
           this.rolelist = res.data.data
+          // 递归去除空的children数组
+          this.removeChildren(this.rolelist)
           this.loading = false
           console.log(res)
         })
@@ -242,7 +244,7 @@ export default {
     // 根据Id删除对应的权限
     async removePermissionById(role, permissionId) {
       // 弹框提示用户是否删除该权限
-      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      const confirmResult = await this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -269,15 +271,30 @@ export default {
       }
       // 把获取到的权限数据保存到permissionList中
       this.permissionList = res.data
-      console.log(this.permissionList)
+      // 递归去除空的children数组
+      this.removeChildren(this.permissionList)
+      // console.log(this.permissionList)
       // 递归获取三级节点的Id值
-      this.getLeafKeys(role, this.defKeys)
+      if (role.children) {
+        this.getLeafKeys(role, this.defKeys)
+      }
+      console.log(role)
       this.setPermissionDialogVisible = true
+    },
+    // 递归删除岗位分类数据当中子节点为空的children对象
+    removeChildren(array) {
+      array.forEach(element => {
+        if (element.children.length === 0) {
+          delete element.children
+        } else {
+          this.removeChildren(element.children)
+        }
+      })
     },
     // 通过递归的形式，获取角色下所有三级权限的id，并保存到 defKeys 数组中
     getLeafKeys(node, arry) {
       // 如果当前 node 节点中的 children 为空的话，则是三级节点
-      if (node.children.length === 0) {
+      if (!node.children) {
         return arry.push(node.id)
         // console.log(node.id)
       }

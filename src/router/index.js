@@ -13,6 +13,7 @@ import Add from '../components/recruit/Add.vue'
 import Upload from '../components/files/Upload.vue'
 import Edit from '../components/recruit/Edit.vue'
 import Apply from '../components/apply/Apply.vue'
+import Report from '../components/report/Report.vue'
 
 Vue.use(VueRouter)
 
@@ -34,7 +35,8 @@ const routes = [
       { path: '/recruit/content/add', component: Add },
       { path: '/files/upload', component: Upload },
       { path: '/recruit/class/upd/:id', component: Edit },
-      { path: '/accept/content', component: Apply }
+      { path: '/accept/content', component: Apply },
+      { path: '/data/list', component: Report }
     ]
   }
 ]
