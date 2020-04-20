@@ -3,18 +3,17 @@
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>应聘管理</el-breadcrumb-item>
-      <el-breadcrumb-item>应聘列表</el-breadcrumb-item>
+      <el-breadcrumb-item>审核管理</el-breadcrumb-item>
+      <el-breadcrumb-item>审核列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片视图区域 -->
     <el-card>
       <el-row class="serachRow">
-        <el-col :span="5">
-          <el-input v-model="queryInfo.apc_id" placeholder="请输入应聘编号" />
-        </el-col>
+        <!-- 学号搜索 -->
         <el-col :span="5">
           <el-input v-model="queryInfo.apc_stuid" placeholder="请输入学生学号" />
         </el-col>
+        <!-- 日期搜索 -->
         <el-col :span="7.5">
           <el-date-picker
             v-model="aoc_date"
@@ -28,6 +27,20 @@
             :picker-options="pickerOptions"
           />
         </el-col>
+        <!-- 处理状态搜索区域 -->
+        <el-col :span="5">
+          <template>
+            <el-select v-model="queryInfo.apc_state" placeholder="请选择">
+              <el-option
+                v-for="item in state"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+        </el-col>
+        <!-- 查找和导出按钮区域 -->
         <el-col :span="2.5">
           <el-button type="primary" @click="getApplyList">查找</el-button>
         </el-col>
@@ -75,6 +88,10 @@
       />
       <!--查看详情的对话框 -->
       <el-dialog
+        v-loading="loading2"
+        element-loading-text="提交操作，请稍后......"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
         title="申请详情"
         :visible.sync="DetailsDialogVisible"
         width="55%"
@@ -125,8 +142,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="DetailsDialogVisible = false">取 消</el-button>
-          <el-button type="primary">打印</el-button>
+          <el-button type="danger" @click="refuse(applyDetails.apcId)">拒绝</el-button>
+          <el-button type="primary" @click="agree(applyDetails.apcId)">同意</el-button>
         </span>
       </el-dialog>
       <!--查看处理进度的对话框 -->
@@ -146,7 +163,6 @@
               <el-tag v-else type="danger">已拒绝</el-tag>
               <p>{{ activity.jdwContext }}提交于：{{ activity.jdwTime }}
               </p></el-card>
-
           </el-timeline-item>
         </el-timeline>
       </el-dialog>
@@ -159,6 +175,7 @@
 export default {
   data() {
     return {
+      loading2: false,
       pickerOptions: {
         shortcuts: [{
           text: '最近一周',
@@ -186,18 +203,30 @@ export default {
           }
         }]
       },
+
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         // 学生学号
         apc_stuid: '',
-        // 应聘编号
-        apc_id: '',
+        // 处理状态
+        apc_state: 0,
         // 开始日期
         start_date: '',
         // 结束日期
         end_date: ''
       },
+      state: [{
+        value: 0,
+        label: '未处理'
+      }, {
+        value: 1,
+        label: '已同意'
+      }, {
+        value: 2,
+        label: '已拒绝'
+      }
+      ],
       // 申请日期
       aoc_date: '',
       // 岗位申请数据列表对象
@@ -216,18 +245,20 @@ export default {
       dealwithlist: []
     }
   },
-  created() {
+  mounted() {
     this.getApplyList()
   },
   methods: {
     // 获取岗位申请数据
     async getApplyList() {
-      // console.log(this.aoc_date)
+      // console.log(this.queryInfo)
       if (this.aoc_date !== null) {
         this.queryInfo.start_date = this.aoc_date[0]
         this.queryInfo.end_date = this.aoc_date[1]
       }
-      const { data: res } = await this.$http.get('accept/content', { params: this.queryInfo })
+      this.queryInfo.start_date = this.aoc_date[0]
+      this.queryInfo.end_date = this.aoc_date[1]
+      const { data: res } = await this.$http.get('accept/handle', { params: this.queryInfo })
       if (res.code !== 20000) {
         return this.$message.error(res.message)
       }
@@ -235,7 +266,7 @@ export default {
       this.total = res.data.total
       this.loading = false
       this.aoc_date = ''
-      console.log(this.applylist)
+      console.log(res)
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -252,6 +283,7 @@ export default {
     },
     // 获取岗位申请的详细信息
     async  showDetailsById(id) {
+      // console.log(id)
       const { data: res } = await this.$http.get('accept/content/view/' + id)
       console.log(res)
       if (res.code !== 20000) {
@@ -262,7 +294,8 @@ export default {
       this.applyTableInfo.push(res.data.applytable)
       // 岗位
       this.jobInfo.push(res.data.centerjob)
-      console.log(this.applyTableInfo)
+      // console.log(this.applyDetails)
+
       this.DetailsDialogVisible = true
     },
     // 关闭详情对话框
@@ -270,9 +303,8 @@ export default {
       this.applyTableInfo = []
       this.jobInfo = []
     },
-    // 处理进度
-    async showProgressBox(id) {
-      console.log('id=' + id)
+    async  showProgressBox(id) {
+      // console.log(id)
       const { data: res } = await this.$http.get('accept/content/dealwith/' + id)
       console.log(res)
       if (res.code !== 20000) {
@@ -280,6 +312,48 @@ export default {
       }
       this.dealwithlist = res.data
       this.ProgressDialogVisible = true
+    },
+    // 拒绝申请
+    refuse(id) {
+      this.loading2 = true
+      this.$http.post('accept/upd', {
+        'apcId': id,
+        'state': 2
+      })
+        .then(res => {
+          this.loading2 = false
+          const { code, message } = res.data
+          if (code !== 20000) return this.$message.error(message)
+          this.$notify({
+            title: '成功',
+            message: '您的处理操作成功',
+            type: 'success'
+          })
+          this.DetailsDialogVisible = false
+          this.getApplyList()
+          console.log(res)
+        })
+    },
+    // 同意申请
+    agree(id) {
+      this.loading2 = true
+      this.$http.post('accept/upd', {
+        'apcId': id,
+        'state': 1
+      })
+        .then(res => {
+          this.loading2 = false
+          const { code, message } = res.data
+          if (code !== 20000) return this.$message.error(message)
+          this.$notify({
+            title: '成功',
+            message: '您的处理操作成功',
+            type: 'success'
+          })
+          this.DetailsDialogVisible = false
+          this.getApplyList()
+          console.log(res)
+        })
     }
   }
 

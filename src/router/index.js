@@ -14,7 +14,7 @@ import Upload from '../components/files/Upload.vue'
 import Edit from '../components/recruit/Edit.vue'
 import Apply from '../components/apply/Apply.vue'
 import Report from '../components/report/Report.vue'
-
+import ApplyHandle from '../components/apply/ApplyHandle.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -36,7 +36,8 @@ const routes = [
       { path: '/files/upload', component: Upload },
       { path: '/recruit/class/upd/:id', component: Edit },
       { path: '/accept/content', component: Apply },
-      { path: '/data/list', component: Report }
+      { path: '/data/list', component: Report },
+      { path: '/accept/handle', component: ApplyHandle }
     ]
   }
 ]
