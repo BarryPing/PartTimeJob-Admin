@@ -15,6 +15,7 @@ import Edit from '../components/recruit/Edit.vue'
 import Apply from '../components/apply/Apply.vue'
 import Report from '../components/report/Report.vue'
 import ApplyHandle from '../components/apply/ApplyHandle.vue'
+import Check from '@/components/apply/Check'
 Vue.use(VueRouter)
 
 const routes = [
@@ -37,7 +38,8 @@ const routes = [
       { path: '/recruit/class/upd/:id', component: Edit },
       { path: '/accept/content', component: Apply },
       { path: '/data/list', component: Report },
-      { path: '/accept/handle', component: ApplyHandle }
+      { path: '/accept/handle', component: ApplyHandle },
+      { path: '/accept/check', component: Check }
     ]
   }
 ]
