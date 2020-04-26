@@ -16,6 +16,9 @@ import Apply from '../components/apply/Apply.vue'
 import Report from '../components/report/Report.vue'
 import ApplyHandle from '../components/apply/ApplyHandle.vue'
 import Check from '@/components/apply/Check'
+import Pay from '@/components/apply/Pay'
+import PaySum from '@/components/apply/PaySum'
+import Notice from '@/components/notice/Notice'
 Vue.use(VueRouter)
 
 const routes = [
@@ -39,7 +42,10 @@ const routes = [
       { path: '/accept/content', component: Apply },
       { path: '/data/list', component: Report },
       { path: '/accept/handle', component: ApplyHandle },
-      { path: '/accept/check', component: Check }
+      { path: '/accept/check', component: Check },
+      { path: '/accept/baochou', component: Pay },
+      { path: '/accept/baochousum', component: PaySum },
+      { path: '/notic/content', component: Notice }
     ]
   }
 ]

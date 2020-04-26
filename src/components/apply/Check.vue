@@ -103,8 +103,8 @@
                 </el-col>
               </el-row>
               <el-form-item style="margin-left:800px">
-                <el-button type="info">重置</el-button>
-                <el-button type="primary">提交</el-button>
+                <el-button type="info" @click="reset(item)">重置</el-button>
+                <el-button type="primary" @click="submit(item)">提交</el-button>
               </el-form-item>
             </el-form>
           </el-carousel-item>
@@ -119,7 +119,10 @@ export default {
   data() {
     return {
       checkForm: [],
-      checkFormRules: {},
+      checkFormRules: {
+
+      },
+
       // 当月
       month: '',
       levels: [{
@@ -152,6 +155,7 @@ export default {
       this.month = date.month
       console.log(date.month)
     },
+    // 获取岗位考核信息
     getCheck() {
       this.$http.get('accept/checkcontent')
         .then(res => {
@@ -160,6 +164,37 @@ export default {
           this.checkForm = data
           console.log(this.checkForm)
         })
+    },
+    // 提交岗位考核数据
+    submit(item) {
+      this.$http.post('accept/add', {
+        ckId: item.ckId,
+        ckTbid: item.ckTbid,
+        ckWeektime: item.ckWeektime,
+        ckSumtime: item.ckSumtime,
+        ckNull: item.ckNull,
+        ckVaca: item.ckVaca,
+        ckLateearly: item.ckLateearly,
+        ckLevel: item.ckLevel,
+        ckFuze: item.ckFuze
+      })
+        .then(res => {
+          const { code, message } = res.data
+          if (code !== 20000) return this.$message.error(message)
+          this.$message.success(message)
+          this.getCheck()
+          console.log(this.checkForm)
+        })
+    },
+    // 重置填写表单
+    reset(item) {
+      item.ckWeektime = '',
+      item.ckSumtime = '',
+      item.ckNull = '',
+      item.ckVaca = '',
+      item.ckLateearly = '',
+      item.ckLevel = '',
+      item.ckFuze = ''
     }
   }
 }
